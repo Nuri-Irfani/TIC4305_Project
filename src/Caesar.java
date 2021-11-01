@@ -6,8 +6,11 @@ import java.lang.StringBuilder;
 class Caesar {
 
     /*
-        Encryption: 
-    */
+    --------------------------------------------------------
+    * Encryption: 
+    * Shifts each character forward by provided number (key)
+    --------------------------------------------------------
+    */ 
     private static StringBuilder encipher( String text, int key ){
         
         StringBuilder encText = new StringBuilder();
@@ -32,6 +35,7 @@ class Caesar {
                 currentChar += 'a';
                 encText.append( (char)currentChar );
             } else {
+                //if non-alphabetical, just shift by key
                 int currentChar = (int)element;
                 currentChar += key;
                 encText.append( (char)currentChar);
@@ -41,6 +45,13 @@ class Caesar {
         return encText;
     }
 
+
+    /*
+    --------------------------------------------------------
+    * Decryption: 
+    * Shifts each character backwards by provided number (key)
+    --------------------------------------------------------
+    */
     private static StringBuilder decipher( String encText, int key ){
 
         StringBuilder decText = new StringBuilder();
@@ -65,6 +76,23 @@ class Caesar {
             }
         }
         return decText;
+    }
+
+
+    /*
+    Cracker
+    --------------------------------------------------------
+    * Method: Character counter
+    * Count how many times an alphabet appear in the string
+    --------------------------------------------------------
+    */ 
+    public static int[] countChar(String textEncrypted) {
+        //Only want alphabetic characters
+        textEncrypted = textEncrypted.replaceAll("[^a-zA-Z]", "").toUpperCase();
+        int[] counts = new int[26];
+        for (char c : textEncrypted.toCharArray())
+            counts[c - 'A']++;
+        return counts;
     }
 
 
