@@ -33,7 +33,14 @@ public class caesardec {
         return decText;
     }
 
-
+    /*
+    -------------------------------------------------------- 
+    * JFileChooser used as a means to process text files.
+    * That is an option, user can opt to type into terminal
+    * With the file chooser method, it is assumed that the text file
+    * is like the sample test data provided.
+    --------------------------------------------------------
+    */
     public static void main(String[] args) throws Exception {
 
         BufferedReader br = new BufferedReader( new InputStreamReader( System.in ) );
@@ -44,6 +51,8 @@ public class caesardec {
         if (inputTF == 1){
             
             File plaintextFile;
+
+            //Basic call for the JFileChooser constructor. 
             JFileChooser chooseFile = new JFileChooser( FileSystemView.getFileSystemView().getHomeDirectory() );
             int returnValue = chooseFile.showOpenDialog(null);
             if (returnValue == JFileChooser.APPROVE_OPTION){
@@ -53,10 +62,14 @@ public class caesardec {
 
                     StringBuilder textfromFile = new StringBuilder();
                     String line = userFile.readLine();
-                    int keyfromFile = Integer.valueOf( line );
+
+                    //Assuming the sample text data is the format for testing with text files,
+                    //we assume the key is provided in the first line of the text:
+                    int keyfromFile = Integer.valueOf( line ); //<-- get an int of the first line. This is our key.
                     System.out.println("Your key is: " + keyfromFile);
 
-                    while ( (line = userFile.readLine()) != null ){
+                    
+                    while ( (line = userFile.readLine()) != null ){ //<-- this gives us the second line onwards
                         textfromFile.append(line);
                         textfromFile.append(System.lineSeparator());
                         line = userFile.readLine();
