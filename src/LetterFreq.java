@@ -1,6 +1,6 @@
 
 
-public class LetterFreqAnalysis {
+public class LetterFreq {
 
     public static int ENG_ALPHABET = 26;
     /*
