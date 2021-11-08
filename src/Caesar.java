@@ -3,6 +3,8 @@ import java.lang.StringBuilder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileSystemView;
 //import java.util.regex.Matcher;
 //import java.util.regex.Pattern;
 //import java.util.ArrayList;
@@ -121,14 +123,52 @@ class Caesar {
 
 
     public static void main(String[] args) throws Exception {
+
         BufferedReader br = new BufferedReader( new InputStreamReader( System.in ) );
-        System.out.print( "Key:" );
-        int key = Integer.parseInt( br.readLine() );
-        System.out.print( "Text:" );
-        String text = br.readLine();
-        StringBuilder encText = encipher( text, key );
-        System.out.println(encText);
-        System.out.println( decipher( encText.toString(), key ) );
-        checkFrequency( encText.toString() );
+        System.out.print( "Text or process from a text file? Enter 0 if text, or 1 if file.\n");
+        
+        int inputTF = Integer.parseInt( br.readLine() );
+    
+        if (inputTF == 1){
+            
+            File plaintextFile;
+            JFileChooser chooseFile = new JFileChooser( FileSystemView.getFileSystemView().getHomeDirectory() );
+            int returnValue = chooseFile.showOpenDialog(null);
+            if (returnValue == JFileChooser.APPROVE_OPTION){
+                plaintextFile = chooseFile.getSelectedFile();
+
+                try ( BufferedReader userFile = new BufferedReader( new FileReader( plaintextFile ))) {
+
+                    StringBuilder textfromFile = new StringBuilder();
+                    String line = userFile.readLine();
+                    int keyfromFile = Integer.valueOf( line );
+                    System.out.println("Your key is: " + keyfromFile);
+
+                    while ( (line = userFile.readLine()) != null ){
+                        textfromFile.append(line);
+                        textfromFile.append(System.lineSeparator());
+                        line = userFile.readLine();
+                    }
+
+                    String completeText = textfromFile.toString();
+                    System.out.print("Your plaintext is:" + completeText);
+
+                    StringBuilder cipherText = encipher( completeText, keyfromFile);
+                    System.out.println("Your cipher is: " + cipherText);
+                    System.out.println("Your deciphered is: " + decipher(cipherText.toString(), keyfromFile));
+                    checkFrequency(cipherText.toString());
+                }
+            }
+            
+        } else {
+            System.out.print( "Key:" );
+            int key = Integer.parseInt( br.readLine() );
+            System.out.print( "Text:" );
+            String text = br.readLine();
+            StringBuilder encText = encipher( text, key );
+            System.out.println(encText);
+            System.out.println( decipher( encText.toString(), key ) );
+            checkFrequency( encText.toString() );
+        }
     }
 }
