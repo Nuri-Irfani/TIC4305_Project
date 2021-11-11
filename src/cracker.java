@@ -25,7 +25,7 @@ public class cracker {
         //96, as we are operating on ascii 32 to 127
         // shift of 0 or 96 would result in no change
         for (int shift = 1; shift < 96; shift++){
-            System.out.println("shift: " + shift + ", " + decipher(encryptedText, shift));
+            System.out.println("shift: " + shift + "\n" + decipher(encryptedText, shift) + "\n");
         }
     }
 
@@ -36,7 +36,7 @@ public class cracker {
         for (char c : encryptedText.toCharArray()){
             frequencies.put(c, frequencies.getOrDefault(c, 0) + 1);
         }
-        System.out.println(frequencies);
+        //System.out.println(frequencies);
 
         //get character with highest value
         Entry<Character,Integer> maxEntry = null;
@@ -45,17 +45,16 @@ public class cracker {
                 maxEntry = entry;
             }
         }
-
-        //Assuming the max frequency character is the space.
+        //Assuming the max frequency character is the space...
         char maxFreq;
         int probableShiftValue;
 
         maxFreq = maxEntry.getKey();
-        System.out.println( (int)maxFreq );
+        //System.out.println( (int)maxFreq );
         probableShiftValue = (int)maxFreq - 32;
 
         System.out.println("Your key might be: " + probableShiftValue);
-        System.out.println("Your deciphered text might be: " + decipher( encryptedText, probableShiftValue) );
+        System.out.println("Your deciphered text might be:\n" + decipher( encryptedText, probableShiftValue) );
     }
 
     /*
@@ -70,15 +69,25 @@ public class cracker {
         for( char element:encText.toCharArray() ){
 
             int currentChar = (int)element;
-                if ( (currentChar - key) < 32 ){
-                    int temp = currentChar - 32;
-                    temp += 127;
-                    currentChar = temp - 91;
+            
+            if (currentChar > 32){
+                currentChar -= key;
+                if (currentChar < 32){
+                    int temp = 32 - currentChar; 
+                    currentChar = 127-temp;
                     decText.append( (char)currentChar );
                 } else {
-                    currentChar -= key;
                     decText.append( (char)currentChar );
                 }
+            } else {
+                if (currentChar == 32){
+                    currentChar = 127 - key;
+                    decText.append( (char)currentChar );
+                }
+                if (currentChar == 10){
+                    decText.append( (char)currentChar );
+                }
+            }
         }
         return decText;
     }
@@ -111,19 +120,29 @@ public class cracker {
                 try ( BufferedReader userFile = new BufferedReader( new FileReader( plaintextFile ))) {
 
                     StringBuilder textfromFile = new StringBuilder();
-                    String line = userFile.readLine();
-
-                    //This assumes that the provided text file is the same as the sample test data given.
-                    //Therefore, the text file is read from 2nd line onwards, ignoring key.
-                    while ( (line = userFile.readLine()) != null ){
+                    String line; 
+                    //Assuming the sample text data is the format for testing with text files,
+                    //it is assumed the key is provided in the first line of the text:
+                    int keyfromFile = Integer.valueOf( userFile.readLine() ); //<-- get an int of the first line. This is the key.
+                    System.out.println("Your key is: " + keyfromFile);
+                    line = userFile.readLine();//<-- this gives the second line onwards
+                    while (line != null ){
                         textfromFile.append(line);
                         textfromFile.append(System.lineSeparator());
                         line = userFile.readLine();
                     }
 
+
                     String completeText = textfromFile.toString();
-                    System.out.print("Your ciphertext is:" + completeText);
+                    System.out.print("Your ciphertext is:\n" + completeText);
                     crackcipher(completeText);
+                    System.out.print("\nDid I get it right? Enter yes or no. \nIf no, I will attempt to brute force.");
+                    String rightwrong = br.readLine();
+                    if (rightwrong.equals("yes")){
+                        System.out.println("Full marks? Hehe :P");
+                    } else {
+                        bruteForce(completeText);
+                    }
                 }
             }
             

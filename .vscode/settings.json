@@ -1,4 +1,7 @@
 {
-    "java.project.sourcePaths": ["src"],
+    "java.project.sourcePaths": [
+        "src",
+        "Temp"
+    ],
     "java.project.outputPath": "bin"
 }

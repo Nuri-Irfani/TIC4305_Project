@@ -16,20 +16,22 @@ public class caesarenc {
         StringBuilder encText = new StringBuilder();
 
         for( char element:text.toCharArray() ){
-
             int currentChar = (int)element;
+            //If character is newline, do nothing
+            if (currentChar == 10){
+                encText.append( (char)currentChar );
+            } else {
                 currentChar += key;
-                //if current character > 127, get overflow value and add to 32 ('SPACE')
-                if (currentChar > 127){
-                    int temp = currentChar - 127;
-                    temp += 32;
-                    currentChar = temp;
-                    encText.append( (char)currentChar);
+                //If character value exceeds 126 after shift, transfer overflow to 32
+                if (currentChar > 126){
+                    int temp = currentChar - 127;//<- 127 because there is still a character after 126
+                    currentChar = temp + 32;
+                    encText.append( (char)currentChar );
                 } else {
-                    encText.append( (char)currentChar);
+                    encText.append( (char)currentChar );
                 }
+            }
         }
-
         return encText;
     }
 
@@ -62,24 +64,25 @@ public class caesarenc {
                 try ( BufferedReader userFile = new BufferedReader( new FileReader( plaintextFile ))) {
 
                     StringBuilder textfromFile = new StringBuilder();
-                    String line = userFile.readLine();
-
+                
                     //Assuming the sample text data is the format for testing with text files,
-                    //we assume the key is provided in the first line of the text:
-                    int keyfromFile = Integer.valueOf( line ); //<-- get an int of the first line. This is our key.
+                    //it is assumed the key is provided in the first line of the text:
+                    int keyfromFile = Integer.valueOf( userFile.readLine() ); //<-- get an int of the first line. This is the key.
                     System.out.println("Your key is: " + keyfromFile);
 
-                    while ( (line = userFile.readLine()) != null ){ //<-- this gives us the second line onwards
+                    String line = userFile.readLine();//<-- this gives the second line onwards
+                    while (line != null ){ 
                         textfromFile.append(line);
                         textfromFile.append(System.lineSeparator());
                         line = userFile.readLine();
                     }
 
+
                     String completeText = textfromFile.toString();
-                    System.out.print("Your plaintext is:" + completeText);
+                    System.out.print("Your plaintext is:" + completeText + "\n");
 
                     StringBuilder cipherText = encipher( completeText, keyfromFile);
-                    System.out.println("Your cipher is: " + cipherText);
+                    System.out.println("Your cipher is: " + cipherText + "\n");
                 }
             }
             
