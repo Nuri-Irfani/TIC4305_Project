@@ -1,8 +1,6 @@
 # TIC4305 Project: Caesar Cipher
 
 This is a project submission for TIC4305. 
-Nuri Irfani binte Masri, A077809U.
-Monterosa username: e0261617
 
 [Github.](https://github.com/Nuri-Irfani/TIC4305_Project)
 
