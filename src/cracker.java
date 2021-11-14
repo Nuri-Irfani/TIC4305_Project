@@ -3,8 +3,6 @@ import java.lang.StringBuilder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileSystemView;
 
 public class cracker {
 
@@ -109,40 +107,33 @@ public class cracker {
     
         if (inputTF == 1){
             
-            File plaintextFile;
+            System.out.println("Enter filepath: ( .txt files only)\n");
+            File plaintextFile = new File( br.readLine() );
 
-            //Basic call for the JFileChooser constructor.
-            JFileChooser chooseFile = new JFileChooser( FileSystemView.getFileSystemView().getHomeDirectory() );
-            int returnValue = chooseFile.showOpenDialog(null);
-            if (returnValue == JFileChooser.APPROVE_OPTION){
-                plaintextFile = chooseFile.getSelectedFile();
+            try ( BufferedReader userFile = new BufferedReader( new FileReader( plaintextFile ))) {
 
-                try ( BufferedReader userFile = new BufferedReader( new FileReader( plaintextFile ))) {
+                StringBuilder textfromFile = new StringBuilder();
+                String line; 
+                //Assuming the sample text data is the format for testing with text files,
+                //it is assumed the key is provided in the first line of the text:
+                int keyfromFile = Integer.valueOf( userFile.readLine() ); //<-- get an int of the first line. This is the key.
+                System.out.println("Your key is: " + keyfromFile);
+                line = userFile.readLine();//<-- this gives the second line onwards
+                while (line != null ){
+                    textfromFile.append(line);
+                    textfromFile.append(System.lineSeparator());
+                    line = userFile.readLine();
+                }
 
-                    StringBuilder textfromFile = new StringBuilder();
-                    String line; 
-                    //Assuming the sample text data is the format for testing with text files,
-                    //it is assumed the key is provided in the first line of the text:
-                    int keyfromFile = Integer.valueOf( userFile.readLine() ); //<-- get an int of the first line. This is the key.
-                    System.out.println("Your key is: " + keyfromFile);
-                    line = userFile.readLine();//<-- this gives the second line onwards
-                    while (line != null ){
-                        textfromFile.append(line);
-                        textfromFile.append(System.lineSeparator());
-                        line = userFile.readLine();
-                    }
-
-
-                    String completeText = textfromFile.toString();
-                    System.out.print("Your ciphertext is:\n" + completeText);
-                    crackcipher(completeText);
-                    System.out.print("\nDid I get it right? Enter yes or no. \nIf no, I will attempt to brute force.");
-                    String rightwrong = br.readLine();
-                    if (rightwrong.equals("yes")){
-                        System.out.println("Full marks? Hehe :P");
-                    } else {
-                        bruteForce(completeText);
-                    }
+                String completeText = textfromFile.toString();
+                System.out.print("Your ciphertext is:\n" + completeText);
+                crackcipher(completeText);
+                System.out.print("\nDid I get it right? Enter yes or no. \nIf no, I will attempt to brute force.");
+                String rightwrong = br.readLine();
+                if (rightwrong.equals("yes")){
+                    System.out.println("Full marks? Hehe :P");
+                } else {
+                    bruteForce(completeText);
                 }
             }
             
@@ -150,12 +141,14 @@ public class cracker {
             System.out.print( "Ciphertext:" );
             String text = br.readLine();
             crackcipher(text);
-            System.out.print("\nDid I get it right? Enter yes or no. \nIf no, I will attempt to brute force.");
+            System.out.println("\nDid I get it right? Enter [yes/no].\n");
             String rightwrong = br.readLine();
             if (rightwrong.equals("yes")){
                 System.out.println("Full marks? Hehe :P");
             } else {
+                System.out.println("Attempting brute force...");
                 bruteForce(text);
+                System.out.println("Brute force complete.");
             }
         }
     }

@@ -1,7 +1,5 @@
 import java.io.*;
 import java.lang.StringBuilder;
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileSystemView;
 
 public class caesarenc {
 
@@ -53,37 +51,31 @@ public class caesarenc {
     
         if (inputTF == 1){
             
-            File plaintextFile;
+            System.out.println("Enter filepath: ( .txt files only)\n");
+            File plaintextFile = new File( br.readLine() );
 
-            //Basic call for the JFileChooser constructor. 
-            JFileChooser chooseFile = new JFileChooser( FileSystemView.getFileSystemView().getHomeDirectory() );
-            int returnValue = chooseFile.showOpenDialog(null);
-            if (returnValue == JFileChooser.APPROVE_OPTION){
-                plaintextFile = chooseFile.getSelectedFile();
+            try ( BufferedReader userFile = new BufferedReader( new FileReader( plaintextFile ))) {
 
-                try ( BufferedReader userFile = new BufferedReader( new FileReader( plaintextFile ))) {
+                StringBuilder textfromFile = new StringBuilder();
+            
+                //Assuming the sample text data is the format for testing with text files,
+                //it is assumed the key is provided in the first line of the text:
+                int keyfromFile = Integer.valueOf( userFile.readLine() ); //<-- get an int of the first line. This is the key.
+                System.out.println("Your key is: " + keyfromFile);
 
-                    StringBuilder textfromFile = new StringBuilder();
-                
-                    //Assuming the sample text data is the format for testing with text files,
-                    //it is assumed the key is provided in the first line of the text:
-                    int keyfromFile = Integer.valueOf( userFile.readLine() ); //<-- get an int of the first line. This is the key.
-                    System.out.println("Your key is: " + keyfromFile);
-
-                    String line = userFile.readLine();//<-- this gives the second line onwards
-                    while (line != null ){ 
-                        textfromFile.append(line);
-                        textfromFile.append(System.lineSeparator());
-                        line = userFile.readLine();
-                    }
-
-
-                    String completeText = textfromFile.toString();
-                    System.out.print("Your plaintext is:" + completeText + "\n");
-
-                    StringBuilder cipherText = encipher( completeText, keyfromFile);
-                    System.out.println("Your cipher is: " + cipherText + "\n");
+                String line = userFile.readLine();//<-- this gives the second line onwards
+                while (line != null ){ 
+                    textfromFile.append(line);
+                    textfromFile.append(System.lineSeparator());
+                    line = userFile.readLine();
                 }
+
+
+                String completeText = textfromFile.toString();
+                System.out.print("Your plaintext is:\n" + completeText);
+
+                StringBuilder cipherText = encipher( completeText, keyfromFile);
+                System.out.println("Your cipher is:\n" + cipherText);
             }
             
         } else {
